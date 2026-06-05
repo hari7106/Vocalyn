@@ -21,6 +21,7 @@ export default function StartInterviewPage() {
 
   const [started, setStarted] = useState(false);
   const [status, setStatus] = useState("Idle");
+  const [cameraError, setCameraError] = useState(null);
 
   /* -------------------------------------------------------
      Load interview config
@@ -38,6 +39,7 @@ export default function StartInterviewPage() {
   useEffect(() => {
     async function initCamera() {
       try {
+        setCameraError(null);
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
@@ -48,6 +50,7 @@ export default function StartInterviewPage() {
         }
       } catch (err) {
         console.error("Camera error:", err);
+        setCameraError(err?.message || "Camera access denied");
       }
     }
 
@@ -164,6 +167,17 @@ Start with the FIRST question now.
     router.push("/dashboard/interview/ends");
   };
 
+  const retryCamera = async () => {
+    setCameraError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+    } catch (err) {
+      setCameraError(err?.message || 'Camera access denied');
+    }
+  };
+
   /* -------------------------------------------------------
      UI
   ------------------------------------------------------- */
@@ -191,13 +205,27 @@ Start with the FIRST question now.
 
         {/* User Video */}
         <div className="flex-1 bg-black rounded-xl overflow-hidden">
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          />
+          <div className="relative h-72 md:h-full">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+
+            {cameraError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white p-4">
+                <p className="mb-3 text-center">Camera error: {cameraError}</p>
+                <div className="flex gap-3">
+                  <Button onClick={retryCamera}>Retry Camera</Button>
+                  <Button variant="outline" onClick={() => router.push('/auth')}>
+                    Use Voice Only
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

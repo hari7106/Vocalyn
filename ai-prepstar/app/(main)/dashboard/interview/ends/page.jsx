@@ -13,12 +13,15 @@ export default function EndScreen() {
       <h1 className="text-3xl font-bold">Session Completed ⭐</h1>
       <p className="text-gray-600">Great job completing the Learning Session!</p>
 
-      <Button onClick={() => router.push("/dashboard")}>
-        Back to Dashboard!
-      </Button>
-        <Button onClick={() => router.push("/dashboard/interview")}>
-         Test Your Skills
-      </Button>
+      <div className="mt-4 flex w-full max-w-xs flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <Button className="w-full sm:w-auto" onClick={() => router.push("/dashboard") }>
+          Back to Dashboard
+        </Button>
+
+        <Button variant="outline" className="w-full sm:w-auto" onClick={() => router.push("/dashboard/interview") }>
+          Learn Again
+        </Button>
+      </div>
     </div>
   );
 }

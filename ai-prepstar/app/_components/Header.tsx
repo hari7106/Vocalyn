@@ -14,16 +14,33 @@ function Header() {
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-base font-semibold text-neutral-600 dark:text-neutral-300">
-  <a onClick={() => router.push('/')} className="hover:text-black dark:hover:text-white transition cursor-pointer">
-    Home
-  </a>
-  <a onClick={() => router.push('/how')} className="hover:text-black dark:hover:text-white transition cursor-pointer">
-    How it works?
-  </a>
-  <a onClick={() => router.push('/topics')} className="hover:text-black dark:hover:text-white transition cursor-pointer">
-    Topics
-  </a>
-</div>
+        <button
+          type="button"
+          aria-label="Go to home"
+          onClick={() => router.push('/')}
+          className="hover:text-black dark:hover:text-white transition"
+        >
+          Home
+        </button>
+
+        <button
+          type="button"
+          aria-label="How it works"
+          onClick={() => router.push('/how')}
+          className="hover:text-black dark:hover:text-white transition"
+        >
+          How it works?
+        </button>
+
+        <button
+          type="button"
+          aria-label="Topics"
+          onClick={() => router.push('/topics')}
+          className="hover:text-black dark:hover:text-white transition"
+        >
+          Topics
+        </button>
+      </div>
     <Button onClick={() => router.push('/auth')}>GET STARTED</Button>
     </nav>
   )
