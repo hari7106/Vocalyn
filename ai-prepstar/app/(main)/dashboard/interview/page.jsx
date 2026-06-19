@@ -13,10 +13,7 @@ export default function InterviewPage() {
   };
 
   const handleGenerateInterview = () => {
-    sessionStorage.setItem(
-      "interviewConfig",
-      JSON.stringify(formData)
-    );
+    sessionStorage.setItem("interviewConfig", JSON.stringify(formData));
   };
 
   return (

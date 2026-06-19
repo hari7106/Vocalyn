@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import {Outfit} from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,14 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-cursorstyle="true">
-      <body className={outfit.className}
-        
-      >
-       
-      {children}
-      
-       
-      </body>
+      <body className={outfit.className}>{children}</body>
     </html>
   );
 }

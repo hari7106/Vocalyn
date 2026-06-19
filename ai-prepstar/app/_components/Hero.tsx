@@ -7,12 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/app/services/supabaseClient";
 
-const images = [
-  "/download.png",
-  "/hero22.png",
-  "/hr.png",
-  "/shake.png",
-];
+const images = ["/download.png", "/hero22.png", "/hr.png", "/shake.png"];
 
 export default function Hero() {
   const router = useRouter();
@@ -21,12 +16,13 @@ export default function Hero() {
 
   /* 🔐 Check auth ONCE correctly */
   useEffect(() => {
-    supabase.auth.getSession()
+    supabase.auth
+      .getSession()
       .then(({ data }) => {
         setIsLoggedIn(!!data.session);
       })
       .catch((error) => {
-        console.error('Auth session check failed:', error);
+        console.error("Auth session check failed:", error);
         setIsLoggedIn(false); // Default to not logged in on error
       });
 
@@ -62,13 +58,12 @@ export default function Hero() {
       <h1 className="mx-auto max-w-4xl text-center text-4xl font-bold text-slate-700 md:text-6xl">
         Ace Any Interview With{" "}
         <span
-  className="relative text-indigo-500
+          className="relative text-indigo-500
   drop-shadow-[0_0_10px_rgba(99,102,241,0.6)]
   dark:drop-shadow-[0_0_14px_rgba(99,102,241,0.8)]"
->
-  VocaLyn
-</span>
-
+        >
+          VocaLyn
+        </span>
       </h1>
 
       <p className="mx-auto mt-4 max-w-xl text-center text-lg text-neutral-600">
@@ -76,24 +71,24 @@ export default function Hero() {
       </p>
 
       {/* CTA */}
-    <div className="mt-8 flex justify-center gap-4">
-  <Button
-    onClick={() => router.push(isLoggedIn ? "/dashboard" : "/auth")}
-    className="
+      <div className="mt-8 flex justify-center gap-4">
+        <Button
+          onClick={() => router.push(isLoggedIn ? "/dashboard" : "/auth")}
+          className="
       relative overflow-hidden
       transition-all duration-300
       hover:scale-105
       hover:shadow-[0_0_25px_rgba(99,102,241,0.45)]
       active:scale-95
     "
-  >
-    Explore Now
-  </Button>
+        >
+          Explore Now
+        </Button>
 
-  <Button
-    variant="outline"
-    onClick={() => router.push("/about")}
-    className="
+        <Button
+          variant="outline"
+          onClick={() => router.push("/about")}
+          className="
       transition-all duration-300
       hover:scale-105
       hover:border-black
@@ -101,11 +96,10 @@ export default function Hero() {
       hover:shadow-[0_0_18px_rgba(99,102,241,0.25)]
       active:scale-95
     "
-  >
-    About Us
-  </Button>
-</div>
-
+        >
+          About Us
+        </Button>
+      </div>
 
       {/* Slider + Waveforms */}
       <div className="relative mt-20 flex items-center justify-center">
@@ -140,9 +134,7 @@ export default function Hero() {
           title="Dashboard"
           desc="Track interviews & progress"
           icon="📊"
-          onClick={() =>
-            router.push(isLoggedIn ? "/dashboard" : "/auth")
-          }
+          onClick={() => router.push(isLoggedIn ? "/dashboard" : "/auth")}
         />
 
         <FeatureCard

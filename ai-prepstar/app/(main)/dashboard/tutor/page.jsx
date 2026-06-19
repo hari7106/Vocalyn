@@ -61,9 +61,7 @@ export default function StartInterviewPage() {
      Vapi init
   ------------------------------------------------------- */
   useEffect(() => {
-    vapiRef.current = new Vapi(
-      process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY
-    );
+    vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
 
     // ✅ Capture messages (IMPORTANT)
     vapiRef.current.on("message", (msg) => {
@@ -155,11 +153,11 @@ Start with the FIRST question now.
     // ✅ SAVE TRANSCRIPT FOR FEEDBACK PAGE
     sessionStorage.setItem(
       "interviewTranscript",
-      JSON.stringify(transcriptRef.current)
+      JSON.stringify(transcriptRef.current),
     );
 
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
 
@@ -170,11 +168,14 @@ Start with the FIRST question now.
   const retryCamera = async () => {
     setCameraError(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
-      setCameraError(err?.message || 'Camera access denied');
+      setCameraError(err?.message || "Camera access denied");
     }
   };
 
@@ -183,13 +184,9 @@ Start with the FIRST question now.
   ------------------------------------------------------- */
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <h1 className="text-3xl font-bold text-center py-6">
-        AI Tutor
-      </h1>
+      <h1 className="text-3xl font-bold text-center py-6">AI Tutor</h1>
 
-      <p className="text-center text-gray-600 mb-4">
-        {status}
-      </p>
+      <p className="text-center text-gray-600 mb-4">{status}</p>
 
       <div className="flex flex-1 gap-6 px-8">
         {/* AI Avatar */}
@@ -219,7 +216,10 @@ Start with the FIRST question now.
                 <p className="mb-3 text-center">Camera error: {cameraError}</p>
                 <div className="flex gap-3">
                   <Button onClick={retryCamera}>Retry Camera</Button>
-                  <Button variant="outline" onClick={() => router.push('/auth')}>
+                  <Button
+                    variant="outline"
+                    onClick={() => router.push("/auth")}
+                  >
                     Use Voice Only
                   </Button>
                 </div>
@@ -234,11 +234,7 @@ Start with the FIRST question now.
           Start Learning
         </Button>
 
-        <Button
-          variant="outline"
-          onClick={stopInterview}
-          disabled={!started}
-        >
+        <Button variant="outline" onClick={stopInterview} disabled={!started}>
           End
         </Button>
       </div>

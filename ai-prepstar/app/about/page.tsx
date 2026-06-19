@@ -9,17 +9,24 @@ export default function AboutPage() {
   const router = useRouter();
 
   return (
-    <div className="relative min-h-screen overflow-hidden 
-      bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
-
+    <div
+      className="relative min-h-screen overflow-hidden 
+      bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
+    >
       {/* 🌌 Ambient blobs */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] 
-          -translate-x-1/2 rounded-full bg-indigo-500/30 blur-[140px]" />
-        <div className="absolute top-1/3 left-16 h-[420px] w-[420px] 
-          rounded-full bg-sky-500/25 blur-[140px]" />
-        <div className="absolute bottom-24 right-24 h-[420px] w-[420px] 
-          rounded-full bg-fuchsia-500/20 blur-[140px]" />
+        <div
+          className="absolute -top-40 left-1/2 h-[520px] w-[520px] 
+          -translate-x-1/2 rounded-full bg-indigo-500/30 blur-[140px]"
+        />
+        <div
+          className="absolute top-1/3 left-16 h-[420px] w-[420px] 
+          rounded-full bg-sky-500/25 blur-[140px]"
+        />
+        <div
+          className="absolute bottom-24 right-24 h-[420px] w-[420px] 
+          rounded-full bg-fuchsia-500/20 blur-[140px]"
+        />
       </div>
 
       {/* HERO */}
@@ -32,8 +39,10 @@ export default function AboutPage() {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 
-          bg-gradient-to-b from-black/70 via-black/50 to-slate-950" />
+        <div
+          className="absolute inset-0 
+          bg-gradient-to-b from-black/70 via-black/50 to-slate-950"
+        />
 
         <div className="relative z-10 flex h-full items-end px-12 pb-10">
           <motion.h1
@@ -42,9 +51,7 @@ export default function AboutPage() {
             className="max-w-4xl text-4xl font-bold md:text-6xl"
           >
             Designed for confidence.
-            <span className="block text-white">
-              Built for real interviews.
-            </span>
+            <span className="block text-white">Built for real interviews.</span>
           </motion.h1>
         </div>
       </div>
@@ -108,9 +115,7 @@ export default function AboutPage() {
             >
               <div className="mb-4 text-3xl">{item.icon}</div>
               <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-400">
-                {item.desc}
-              </p>
+              <p className="mt-2 text-sm text-slate-400">{item.desc}</p>
             </motion.div>
           ))}
         </div>

@@ -3,7 +3,15 @@
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Code2, Server, Layers, Brain, Settings, Briefcase, ArrowRight } from "lucide-react";
+import {
+  Code2,
+  Server,
+  Layers,
+  Brain,
+  Settings,
+  Briefcase,
+  ArrowRight,
+} from "lucide-react";
 
 export default function RolesPage() {
   const router = useRouter();
@@ -65,7 +73,9 @@ export default function RolesPage() {
       {/* HEADER */}
       <div className="relative z-20 border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">VocaLyn</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            VocaLyn
+          </h1>
           <Button
             variant="ghost"
             onClick={() => router.push("/")}
@@ -94,7 +104,8 @@ export default function RolesPage() {
             </span>
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-slate-400">
-            Choose the role that matches your career goals and practice targeted interview questions designed for professionals like you.
+            Choose the role that matches your career goals and practice targeted
+            interview questions designed for professionals like you.
           </p>
         </motion.div>
 
@@ -112,19 +123,27 @@ export default function RolesPage() {
               >
                 <div className="relative h-full">
                   {/* Background glow */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${role.color} opacity-0 group-hover:opacity-10 blur-2xl rounded-2xl transition-opacity duration-300`} />
-                  
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${role.color} opacity-0 group-hover:opacity-10 blur-2xl rounded-2xl transition-opacity duration-300`}
+                  />
+
                   {/* Card */}
                   <div className="relative h-full rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-xl p-6 hover:border-slate-700 transition-all duration-300 flex flex-col cursor-pointer group-hover:shadow-2xl group-hover:shadow-indigo-500/10">
                     {/* Icon with gradient */}
-                    <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${role.color} text-white`}>
+                    <div
+                      className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${role.color} text-white`}
+                    >
                       <Icon className="h-6 w-6" />
                     </div>
 
                     {/* Content */}
-                    <h3 className="mb-2 text-xl font-semibold text-white">{role.title}</h3>
-                    <p className="mb-4 flex-1 text-slate-400 text-sm leading-relaxed">{role.description}</p>
-                    
+                    <h3 className="mb-2 text-xl font-semibold text-white">
+                      {role.title}
+                    </h3>
+                    <p className="mb-4 flex-1 text-slate-400 text-sm leading-relaxed">
+                      {role.description}
+                    </p>
+
                     {/* Skills */}
                     <div className="flex flex-wrap gap-2">
                       {role.skills.map((skill, i) => (
@@ -152,8 +171,12 @@ export default function RolesPage() {
         >
           <div className="inline-block rounded-2xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 p-1 border border-indigo-500/30">
             <div className="rounded-xl bg-slate-900/80 px-8 py-6">
-              <h3 className="text-2xl font-bold mb-3">Find your perfect role</h3>
-              <p className="text-slate-400 mb-6">Start practicing with role-specific questions today.</p>
+              <h3 className="text-2xl font-bold mb-3">
+                Find your perfect role
+              </h3>
+              <p className="text-slate-400 mb-6">
+                Start practicing with role-specific questions today.
+              </p>
               <Button
                 onClick={() => router.push("/dashboard")}
                 size="lg"

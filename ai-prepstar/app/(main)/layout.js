@@ -1,11 +1,9 @@
-import Provider from '../provider';
+import Provider from "../provider";
 
 function DashboardLayout({ children }) {
   return (
     <Provider>
-      <div className="min-h-screen bg-secondary">
-        {children}
-      </div>
+      <div className="min-h-screen bg-secondary">{children}</div>
     </Provider>
   );
 }

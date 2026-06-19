@@ -1,9 +1,4 @@
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req) {
   try {
@@ -54,22 +49,74 @@ Return ONLY valid JSON in this exact format:
 }
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4-mini",
-      temperature: 0.2,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a harsh but fair technical interviewer who evaluates conservatively.",
+    // Support GEMINI_API_KEY (preferred) or fallback to OPENAI_API_KEY for convenience
+    const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+    const model = process.env.GEMINI_MODEL || "models/text-bison-001";
+
+    // Use standard generateContent method for modern Gemini models (e.g. gemini-2.5-flash)
+    const url = `https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${apiKey}`;
+
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.2,
+          maxOutputTokens: 4096,
+          thinkingConfig: {
+            thinkingBudget: 0,
+          },
         },
-        { role: "user", content: prompt },
-      ],
+      }),
     });
 
-    const raw = completion.choices[0].message.content;
+    const completion = await resp.json();
 
-    const parsed = JSON.parse(raw);
+    // 🚨 Check for HTTP errors or error block in response payload
+    if (!resp.ok || completion.error) {
+      console.error(
+        "Gemini API Error details:",
+        completion.error || completion,
+      );
+      throw new Error(
+        `Gemini API Error: ${completion.error?.message || resp.statusText || "Unknown error"}`,
+      );
+    }
+
+    // 🚨 Check if candidates are missing (e.g. due to safety blocks)
+    if (!completion?.candidates || completion.candidates.length === 0) {
+      console.error("Gemini API response candidate is empty:", completion);
+      throw new Error(
+        "Gemini API: No candidates returned (possibly blocked by safety settings)",
+      );
+    }
+
+    let raw = completion?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!raw) {
+      raw = completion?.candidates?.[0]?.output || JSON.stringify(completion);
+    }
+
+    // Strip markdown code block wrappers if present
+    if (typeof raw === "string") {
+      raw = raw
+        .replace(/^```json\s*/i, "")
+        .replace(/```\s*$/, "")
+        .trim();
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (parseErr) {
+      console.error("FAILED TO PARSE RAW GEMINI RESPONSE:", raw);
+      console.error(
+        "FULL GEMINI COMPLETION OBJECT:",
+        JSON.stringify(completion, null, 2),
+      );
+      throw new Error(`Gemini JSON parsing failure: ${parseErr.message}`);
+    }
 
     // 🛡️ FINAL SAFETY NET
     if (

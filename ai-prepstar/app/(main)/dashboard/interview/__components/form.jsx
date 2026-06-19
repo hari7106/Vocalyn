@@ -13,10 +13,9 @@ import { useRouter } from "next/navigation";
 import { Code2, Users, Puzzle, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function Form({ handleInputChange , onGenerate }) {
+function Form({ handleInputChange, onGenerate }) {
   const [types, setTypes] = useState([]);
   const router = useRouter();
-  
 
   const interviewTypes = [
     { id: "technical", label: "Technical", icon: Code2 },
@@ -27,10 +26,9 @@ function Form({ handleInputChange , onGenerate }) {
 
   const toggleType = (id) => {
     setTypes((prev) => {
-      const updated =
-        prev.includes(id)
-          ? prev.filter((t) => t !== id)
-          : [...prev, id];
+      const updated = prev.includes(id)
+        ? prev.filter((t) => t !== id)
+        : [...prev, id];
 
       // ✅ pass selected interview types to parent
       handleInputChange("interviewType", updated);
@@ -43,42 +41,28 @@ function Form({ handleInputChange , onGenerate }) {
     <div className="rounded-xl bg-white p-6 shadow-sm">
       {/* Job Position */}
       <div>
-        <h2 className="text-sm font-medium text-gray-700">
-          Job Position
-        </h2>
+        <h2 className="text-sm font-medium text-gray-700">Job Position</h2>
         <Input
           placeholder="e.g. Software Engineer"
           className="mt-2"
-          onChange={(e) =>
-            handleInputChange("jobPosition", e.target.value)
-          }
+          onChange={(e) => handleInputChange("jobPosition", e.target.value)}
         />
       </div>
 
       {/* Job Description */}
       <div className="mt-5">
-        <h2 className="text-sm font-medium text-gray-700">
-          Job Description
-        </h2>
+        <h2 className="text-sm font-medium text-gray-700">Job Description</h2>
         <Input
           placeholder="Enter detailed job description"
           className="mt-2"
-          onChange={(e) =>
-            handleInputChange("jobDescription", e.target.value)
-          }
+          onChange={(e) => handleInputChange("jobDescription", e.target.value)}
         />
       </div>
 
       {/* Duration */}
       <div className="mt-5">
-        <h2 className="text-sm font-medium text-gray-700">
-          Duration
-        </h2>
-        <Select
-          onValueChange={(value) =>
-            handleInputChange("duration", value)
-          }
-        >
+        <h2 className="text-sm font-medium text-gray-700">Duration</h2>
+        <Select onValueChange={(value) => handleInputChange("duration", value)}>
           <SelectTrigger className="mt-2 w-full">
             <SelectValue placeholder="Select Duration" />
           </SelectTrigger>
@@ -132,10 +116,13 @@ function Form({ handleInputChange , onGenerate }) {
         </div>
       </div>
 
-      <Button className="mt-8 w-full"  onClick={() => {
-    onGenerate();
-     router.push("/dashboard/interview/start")}
-    }>
+      <Button
+        className="mt-8 w-full"
+        onClick={() => {
+          onGenerate();
+          router.push("/dashboard/interview/start");
+        }}
+      >
         Generate Interview
       </Button>
     </div>

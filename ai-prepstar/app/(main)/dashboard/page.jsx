@@ -13,9 +13,7 @@ function Dashboard() {
         <Welcome />
 
         {/* reduce heading margin */}
-        <h2 className="mt-4 text-2xl font-bold">
-          Dashboard
-        </h2>
+        <h2 className="mt-4 text-2xl font-bold">Dashboard</h2>
 
         <Create />
 

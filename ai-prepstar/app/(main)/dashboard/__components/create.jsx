@@ -10,7 +10,6 @@ function Create() {
   return (
     <div className="mt-6 w-full">
       <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
-
         {/* Card 1 */}
         <div
           onClick={() => router.push("/dashboard/interview")}
@@ -44,7 +43,6 @@ function Create() {
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );

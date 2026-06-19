@@ -28,7 +28,6 @@ function InterviewUI({ callActive, transcript }) {
 
   return (
     <div className="flex h-screen">
-      
       {/* Video Area */}
       <div className="flex-1 bg-black flex items-center justify-center text-white">
         <video autoPlay muted className="rounded-xl w-2/3">

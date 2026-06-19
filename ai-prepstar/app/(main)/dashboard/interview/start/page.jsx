@@ -58,17 +58,26 @@ export default function StartInterviewPage() {
      Vapi init
   ------------------------------------------------------- */
   useEffect(() => {
-    vapiRef.current = new Vapi(
-      process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY
-    );
+    vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
 
-    // ✅ Capture messages (IMPORTANT)
+    // ✅ Capture messages (IMPORTANT) - normalize different payload shapes
     vapiRef.current.on("message", (msg) => {
-      if (msg?.role && msg?.content) {
+      console.log("VAPI message event:", msg);
+
+      const text =
+        msg?.content || msg?.transcript || msg?.message?.content || msg?.text;
+
+      if (msg?.role && text) {
         transcriptRef.current.push({
           role: msg.role,
-          content: msg.content,
+          // keep both `content` and `text` for compatibility across components
+          content: text,
+          text: text,
+          transcriptType: msg.transcriptType || null,
+          type: msg.type || null,
         });
+
+        console.log("Transcript length now:", transcriptRef.current.length);
       }
     });
 
@@ -150,13 +159,18 @@ Start with the FIRST question now.
     setStatus("Interview ended");
 
     // ✅ SAVE TRANSCRIPT FOR FEEDBACK PAGE
+    console.log(
+      "Saving transcript, count:",
+      transcriptRef.current.length,
+      transcriptRef.current,
+    );
     sessionStorage.setItem(
       "interviewTranscript",
-      JSON.stringify(transcriptRef.current)
+      JSON.stringify(transcriptRef.current),
     );
 
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
 
@@ -169,13 +183,9 @@ Start with the FIRST question now.
   ------------------------------------------------------- */
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <h1 className="text-3xl font-bold text-center py-6">
-        AI Interview
-      </h1>
+      <h1 className="text-3xl font-bold text-center py-6">AI Interview</h1>
 
-      <p className="text-center text-gray-600 mb-4">
-        {status}
-      </p>
+      <p className="text-center text-gray-600 mb-4">{status}</p>
 
       <div className="flex flex-1 gap-6 px-8">
         {/* AI Avatar */}
@@ -206,11 +216,7 @@ Start with the FIRST question now.
           Start Interview
         </Button>
 
-        <Button
-          variant="outline"
-          onClick={stopInterview}
-          disabled={!started}
-        >
+        <Button variant="outline" onClick={stopInterview} disabled={!started}>
           Stop Interview
         </Button>
       </div>

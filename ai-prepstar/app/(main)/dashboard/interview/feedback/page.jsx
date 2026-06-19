@@ -2,23 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/app/services/supabaseClient";
-import { useUser } from "@/app/context/UserDetailContext";
+// No database persistence required for feedback display
 
 export default function FeedbackPage() {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [error, setError] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const { userEmail } = useUser();
+  // no saving required when only displaying feedback
 
   useEffect(() => {
     async function loadFeedback() {
       try {
         // 🧠 transcript already saved by you
         const transcript = JSON.parse(
-          sessionStorage.getItem("interviewTranscript") || "[]"
+          sessionStorage.getItem("interviewTranscript") || "[]",
         );
+
+        // Debug: inspect transcript saved from the interview
+        console.log("Feedback: transcript loaded", transcript);
 
         const res = await fetch("/api/feedback", {
           method: "POST",
@@ -31,10 +32,54 @@ export default function FeedbackPage() {
         }
 
         const data = await res.json();
+        console.log("Feedback API response:", data);
+
+        // If transcript is very short, show a helpful message instead of generic 2/10
+        if (Array.isArray(transcript) && transcript.length < 5) {
+          setError(
+            `Transcript too short (${transcript.length} items). Please ensure you answered at least 5 prompts.`,
+          );
+          return;
+        }
+
         setFeedback(data);
-        
-        // Save interview to database
-        await saveInterviewToDatabase(data, transcript);
+
+        // ✅ Save interview results to localStorage for dashboard retrieval
+        try {
+          const storedConfig = JSON.parse(
+            sessionStorage.getItem("interviewConfig") || "{}",
+          );
+          const newInterview = {
+            id: Date.now().toString(),
+            title: storedConfig.jobPosition || "AI Mock Interview",
+            date: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            score: data.score || 0,
+          };
+          const existing = JSON.parse(
+            localStorage.getItem("vocalyn_interviews") || "[]",
+          );
+          const alreadySaved = existing.some(
+            (inv) =>
+              inv.title === newInterview.title &&
+              inv.score === newInterview.score &&
+              Math.abs(Number(inv.id) - Number(newInterview.id)) < 5000,
+          );
+          if (!alreadySaved) {
+            localStorage.setItem(
+              "vocalyn_interviews",
+              JSON.stringify([newInterview, ...existing]),
+            );
+          }
+        } catch (storageErr) {
+          console.error(
+            "Failed to save interview to localStorage:",
+            storageErr,
+          );
+        }
       } catch (err) {
         console.error(err);
         setError("Unable to generate feedback");
@@ -46,39 +91,7 @@ export default function FeedbackPage() {
     loadFeedback();
   }, []);
 
-  const saveInterviewToDatabase = async (feedbackData, transcript) => {
-    try {
-      setSaving(true);
-      const config = JSON.parse(sessionStorage.getItem("interviewConfig") || "{}");
-      
-      const { error } = await supabase
-        .from("interviews")
-        .insert([
-          {
-            user_email: userEmail,
-            job_position: config.jobPosition,
-            job_description: config.jobDescription,
-            interview_type: config.interviewType?.join(", "),
-            duration: config.duration,
-            score: feedbackData.score,
-            summary: feedbackData.summary,
-            strengths: feedbackData.strengths,
-            improvements: feedbackData.improvements,
-            insights: feedbackData.insights,
-            transcript: transcript,
-            created_at: new Date().toISOString(),
-          },
-        ]);
-
-      if (error) {
-        console.error("Error saving interview:", error);
-      }
-    } catch (err) {
-      console.error("Error saving to database:", err);
-    } finally {
-      setSaving(false);
-    }
-  };
+  // persistence removed — feedback is only displayed to the user
 
   if (loading) {
     return (
@@ -105,23 +118,15 @@ export default function FeedbackPage() {
   } = feedback;
 
   const scoreColor =
-    score >= 7
-      ? "bg-green-500"
-      : score >= 4
-      ? "bg-yellow-400"
-      : "bg-red-500";
+    score >= 7 ? "bg-green-500" : score >= 4 ? "bg-yellow-400" : "bg-red-500";
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* 🎉 Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            🎉 Interview Completed
-          </h1>
-          <p className="text-gray-600">
-            Here’s how you performed
-          </p>
+          <h1 className="text-3xl font-bold mb-2">🎉 Interview Completed</h1>
+          <p className="text-gray-600">Here’s how you performed</p>
         </div>
 
         {/* 🔢 Score */}
@@ -140,24 +145,16 @@ export default function FeedbackPage() {
 
         {/* 🧾 Summary */}
         <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Key Summary
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            {summary}
-          </p>
+          <h2 className="text-xl font-semibold mb-2">Key Summary</h2>
+          <p className="text-gray-700 leading-relaxed">{summary}</p>
         </section>
 
         {/* 💪 Strengths */}
         <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Strengths
-          </h2>
+          <h2 className="text-xl font-semibold mb-2">Strengths</h2>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
             {strengths.length > 0 ? (
-              strengths.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))
+              strengths.map((item, i) => <li key={i}>{item}</li>)
             ) : (
               <li>No strong areas identified</li>
             )}
@@ -166,14 +163,10 @@ export default function FeedbackPage() {
 
         {/* 🔧 Improvements */}
         <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Areas to Improve
-          </h2>
+          <h2 className="text-xl font-semibold mb-2">Areas to Improve</h2>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
             {improvements.length > 0 ? (
-              improvements.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))
+              improvements.map((item, i) => <li key={i}>{item}</li>)
             ) : (
               <li>No major improvements suggested</li>
             )}
@@ -182,14 +175,10 @@ export default function FeedbackPage() {
 
         {/* 🧠 Insights */}
         <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">
-            Interview Insights
-          </h2>
+          <h2 className="text-xl font-semibold mb-2">Interview Insights</h2>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
             {insights.length > 0 ? (
-              insights.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))
+              insights.map((item, i) => <li key={i}>{item}</li>)
             ) : (
               <li>No additional insights available</li>
             )}
@@ -198,7 +187,7 @@ export default function FeedbackPage() {
 
         {/* 🔁 CTA */}
         <div className="text-center">
-          <Button onClick={() => window.location.href = "/dashboard"}>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
             Back to Dashboard
           </Button>
         </div>
