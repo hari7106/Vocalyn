@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // No database persistence required for feedback display
 
 export default function FeedbackPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [error, setError] = useState(null);
@@ -187,7 +189,7 @@ export default function FeedbackPage() {
 
         {/* 🔁 CTA */}
         <div className="text-center">
-          <Button onClick={() => (window.location.href = "/dashboard")}>
+          <Button onClick={() => router.push("/dashboard")}>
             Back to Dashboard
           </Button>
         </div>
